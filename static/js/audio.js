@@ -40,7 +40,15 @@ class AudioController {
                 body: JSON.stringify({ text })
             });
 
-            if (!response.ok) throw new Error('Conversion failed');
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Conversion failed');
+            }
+
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('audio/mpeg')) {
+                throw new Error('Invalid response format from server');
+            }
 
             const audioBlob = await response.blob();
             const audioUrl = URL.createObjectURL(audioBlob);
@@ -50,11 +58,35 @@ class AudioController {
             this.waveformVisualizer.loadAudio(audioUrl);
         } catch (error) {
             console.error('Error:', error);
-            alert('Failed to convert text to speech');
+            const errorMessage = error.message || 'Failed to convert text to speech';
+            this.showError(errorMessage);
         } finally {
             this.loading.style.display = 'none';
             this.convertBtn.disabled = false;
         }
+    }
+
+    showError(message) {
+        const existingAlert = document.querySelector('.alert');
+        if (existingAlert) {
+            existingAlert.remove();
+        }
+
+        const alert = document.createElement('div');
+        alert.className = 'alert alert-danger alert-dismissible fade show mt-3';
+        alert.role = 'alert';
+        alert.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+        
+        this.convertBtn.parentElement.insertAdjacentElement('afterend', alert);
+        
+        // Auto-dismiss after 5 seconds
+        setTimeout(() => {
+            alert.classList.remove('show');
+            setTimeout(() => alert.remove(), 150);
+        }, 5000);
     }
 
     downloadAudio() {
