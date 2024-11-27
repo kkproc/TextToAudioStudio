@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studio TTS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="studio-container">
+        <header class="text-center mb-5">
+            <h1>Studio TTS</h1>
+            <p class="text-muted">Professional Text-to-Speech Conversion</p>
+        </header>
+
+        <main>
+            <div class="text-input-area">
+                <textarea id="textInput" placeholder="Enter your text here..." maxlength="5000"></textarea>
+                <div class="char-counter">0/5000 characters</div>
+            </div>
+
+            <div class="waveform-container">
+                <canvas id="waveform"></canvas>
+            </div>
+
+            <div class="controls">
+                <button id="convertBtn" class="btn btn-studio">
+                    Convert to Speech
+                </button>
+                
+                <div class="loading">
+                    <div class="equalizer">
+                        <div class="equalizer-bar"></div>
+                        <div class="equalizer-bar"></div>
+                        <div class="equalizer-bar"></div>
+                        <div class="equalizer-bar"></div>
+                    </div>
+                    <span>Processing...</span>
+                </div>
+
+                <button id="downloadBtn" class="btn btn-studio" disabled>
+                    Download Audio
+                </button>
+            </div>
+
+            <audio id="audioPlayer" controls></audio>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/waveform.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/audio.js') }}"></script>
+</body>
+</html>
